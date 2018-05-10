@@ -1,17 +1,15 @@
-const userController = require('../controllers/usersController');
+const usuarioControlador = require('../controllers/usuarioControlador');
 const { check, validationResult } = require('express-validator/check');
 
 module.exports = (app) => {
 
-    app.post('/login', [
-        check('login').exists().withMessage('login is not present'),  
-        check('password').exists().withMessage('password is not present'),  
+    app.post('/criarUsuario', [
       ], (req, res) => {
   
         try {
             validationResult(req).throw();  
             let data = req.body;
-            userController.login(data, function(data) {
+            usuarioControlador.criarUsuario(data, function(data) {
                 res.json(data);
             });
         } catch (err) {

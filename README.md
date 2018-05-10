@@ -1,5 +1,5 @@
-# O projeto se dara no desenvolvimento de uma micro aplicacao que utilize a criptografia para a
-#garantia da confidencialidade e da integridade dos dados.
+# CRIP - COMP9
+O projeto se dara no desenvolvimento de uma micro aplicacao que utilize a criptografia para a garantia da confidencialidade e da integridade dos dados.
 
 ## Executar localmente
 

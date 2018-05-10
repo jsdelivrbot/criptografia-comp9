@@ -9,7 +9,7 @@ function _criaPool() {
             host: 'localhost',
             user: 'root',
             password: 'root', //root
-            database: 'heroku_d0adbf2c8ee0f5a', //databese dev
+            database: 'heroku_d1815ad8ba88e51', //databese dev
             multipleStatements: true,
             dateStrings: true
         });
