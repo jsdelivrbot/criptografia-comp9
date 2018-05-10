@@ -5,7 +5,6 @@ module.exports = (app) => {
 
     app.post('/criarUsuario', [
       ], (req, res) => {
-  
         try {
             validationResult(req).throw();  
             let data = req.body;
