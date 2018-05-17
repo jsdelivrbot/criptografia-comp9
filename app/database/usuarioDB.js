@@ -24,9 +24,29 @@ userDatabase.criarUsuario = function(connectionFactory, usuario, callback) {
 userDatabase.listarUsuarios = function(connectionFactory, callback) {
     connectionFactory(function(err, connection) {
 
-		let sql = `SELECT usuario.nome, usuario.id, usuario.informacoes_usuario FROM usuario`;
+		let sql = `SELECT usuario.nome, usuario.id, usuario.email, usuario.telefone FROM usuario`;
  
 		connection.query(sql, function(err, result) {
+	    	connection.release();
+
+            if (!err && result.length != 0){
+                callback(err, result);	
+			}else {
+				callback(err, false);
+			}
+			
+        });
+        
+	});
+}
+
+userDatabase.editarUsuarios = function(connectionFactory, body, callback) {
+    connectionFactory(function(err, connection) {
+
+		let sql = `UPDATE usuario SET ? WHERE id= ?;`;		
+		let inserts = [body.usuario, body.id];
+
+		connection.query(sql, inserts, function(err, result) {
 	    	connection.release();
 
             if (!err && result.length != 0){

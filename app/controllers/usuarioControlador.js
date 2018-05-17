@@ -13,18 +13,9 @@ const userController = {
                 
                 let usuarioCriar = body.criar;
                 usuarioCriar['senha'] = bcrypt.hashSync(usuarioCriar.senha);
-
-                var informacoes_usuario = jwt.sign(
-                { 
-                    email: usuarioCriar.email,
-                    telefone: usuarioCriar.telefone
-                }
-                , secretKey);
-
-                delete usuarioCriar['email'];
-                delete usuarioCriar['telefone'];
-                usuarioCriar['informacoes_usuario'] = informacoes_usuario;
-
+                usuarioCriar['email'] = jwt.sign({ email: usuarioCriar.email}, secretKey);
+                usuarioCriar['telefone'] = jwt.sign({ email: usuarioCriar.email}, secretKey);
+                
                 usuarioDB.criarUsuario(connectionFactory(), usuarioCriar, function(exception, criarUsuarioResult) {  
                     if (criarUsuarioResult){
                         callback({ message : "Criado com sucesso.", id: criarUsuarioResult.insertId });  
@@ -49,7 +40,8 @@ const userController = {
                     if (listarUsuariosResult){
 
                         let result = listarUsuariosResult.map(element => {
-                            element.informacoes_usuario = jwt.decode(element.informacoes_usuario);
+                            element.email = jwt.decode(element.email);
+                            element.telefone = jwt.decode(element.telefone);
                             return element;
                         });  
                         callback({ usuarios: result });  
@@ -60,6 +52,35 @@ const userController = {
 
             }else{
                 callback({ message : "Usuário não foi criado, verifique suas informações." });  
+            }
+
+        });
+    },
+
+    editarUsuarios: (body, callback) => {
+        verificarIdUsuarioESenha(body.editor, function(verificarIdUsuarioResult) {   
+
+            if (verificarIdUsuarioResult === true || body.editor.id === body.editar.id){
+
+                let usuarioEditar = body.editar;
+
+                if (usuarioEditar.email){
+                    usuarioEditar['email'] = jwt.sign({ email: usuarioEditar.email}, secretKey);
+                }
+                if (usuarioEditar.telefone){
+                    usuarioEditar['telefone'] = jwt.sign({ email: usuarioEditar.email}, secretKey);
+                }
+                        
+                usuarioDB.editarUsuarios(connectionFactory(), body.editar, function(exception, editarUsuariosResult) {  
+                    if (editarUsuariosResult){
+                        callback({ message : "Editado com sucesso." });  
+                    }else{
+                        callback({ message : "Falha ao editar o usuario." });  
+                    }
+                });
+
+            }else{
+                callback({ message : "Usuário não foi editado, verifique suas informações." });  
             }
 
         });
