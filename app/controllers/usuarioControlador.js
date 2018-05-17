@@ -8,11 +8,23 @@ const userController = {
 
     criarUsuario: (body, callback) => {
         verificarIdUsuarioESenha(body.criador, function(verificarIdUsuarioResult) {   
-        
+
             if (verificarIdUsuarioResult === true){
+                
                 let usuarioCriar = body.criar;
                 usuarioCriar['senha'] = bcrypt.hashSync(usuarioCriar.senha);
-                
+
+                var informacoes_usuario = jwt.sign(
+                { 
+                    email: usuarioCriar.email,
+                    telefone: usuarioCriar.telefone
+                }
+                , secretKey);
+
+                delete usuarioCriar['email'];
+                delete usuarioCriar['telefone'];
+                usuarioCriar['informacoes_usuario'] = informacoes_usuario;
+
                 usuarioDB.criarUsuario(connectionFactory(), usuarioCriar, function(exception, criarUsuarioResult) {  
                     if (criarUsuarioResult){
                         callback({ message : "Criado com sucesso.", id: criarUsuarioResult.insertId });  
@@ -26,6 +38,35 @@ const userController = {
             }
 
         });
+    },
+
+    listarUsuarios: (body, callback) => {
+        verificarIdUsuarioESenha(body.buscador, function(verificarIdUsuarioResult) {   
+
+            if (verificarIdUsuarioResult === true){
+    
+                usuarioDB.listarUsuarios(connectionFactory(), function(exception, listarUsuariosResult) {  
+                    if (listarUsuariosResult){
+
+                        let result = listarUsuariosResult.map(element => {
+                            element.informacoes_usuario = jwt.decode(element.informacoes_usuario);
+                            return element;
+                        });  
+                        callback({ usuarios: result });  
+                    }else{
+                        callback({ message : "Falha ao buscar o usuario." });  
+                    }
+                });
+
+            }else{
+                callback({ message : "Usuário não foi criado, verifique suas informações." });  
+            }
+
+        });
+    },
+
+    createPasswordUser: (body, callback) => {
+        callback(bcrypt.hashSync(body.senha));  
     },
     
 }

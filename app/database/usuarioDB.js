@@ -21,6 +21,25 @@ userDatabase.criarUsuario = function(connectionFactory, usuario, callback) {
 	});
 }
 
+userDatabase.listarUsuarios = function(connectionFactory, callback) {
+    connectionFactory(function(err, connection) {
+
+		let sql = `SELECT usuario.nome, usuario.id, usuario.informacoes_usuario FROM usuario`;
+ 
+		connection.query(sql, function(err, result) {
+	    	connection.release();
+
+            if (!err && result.length != 0){
+                callback(err, result);	
+			}else {
+				callback(err, false);
+			}
+			
+        });
+        
+	});
+}
+
 userDatabase.verificarIdUsuario = function(connectionFactory, usuario, callback) {
     connectionFactory(function(err, connection) {
 
