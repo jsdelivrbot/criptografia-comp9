@@ -62,14 +62,16 @@ const userController = {
 
             if (verificarIdUsuarioResult === true || body.editor.id === body.editar.id){
 
-                let usuarioEditar = body.editar;
+                let usuarioEditar = body.editar.usuario;
 
                 if (usuarioEditar.email){
                     usuarioEditar['email'] = jwt.sign({ email: usuarioEditar.email}, secretKey);
                 }
                 if (usuarioEditar.telefone){
-                    usuarioEditar['telefone'] = jwt.sign({ email: usuarioEditar.email}, secretKey);
+                    usuarioEditar['telefone'] = jwt.sign({ telefone: usuarioEditar.telefone}, secretKey);
                 }
+
+                body.editar.usuario = usuarioEditar;
                         
                 usuarioDB.editarUsuarios(connectionFactory(), body.editar, function(exception, editarUsuariosResult) {  
                     if (editarUsuariosResult){
