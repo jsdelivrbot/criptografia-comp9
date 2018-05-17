@@ -88,6 +88,27 @@ const userController = {
         });
     },
 
+    
+    excluirUsuario: (body, callback) => {
+        verificarIdUsuarioESenha(body.apagador, function(verificarIdUsuarioResult) {   
+
+            if (verificarIdUsuarioResult === true){
+    
+                usuarioDB.excluirUsuario(connectionFactory(), body.apagar, function(exception, excluirUsuarioResult) {  
+                    if (excluirUsuarioResult){
+                        callback({ message : "Excluido com sucesso" });  
+                    }else{
+                        callback({ message : "Falha ao excluir o usuario." });  
+                    }
+                });
+
+            }else{
+                callback({ message : "Usuário não foi criado, verifique suas informações." });  
+            }
+
+        });
+    },
+
     createPasswordUser: (body, callback) => {
         callback(bcrypt.hashSync(body.senha));  
     },

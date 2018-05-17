@@ -40,6 +40,27 @@ userDatabase.listarUsuarios = function(connectionFactory, callback) {
 	});
 }
 
+userDatabase.excluirUsuario = function(connectionFactory, body, callback) {
+    connectionFactory(function(err, connection) {
+
+		let sql = `DELETE FROM usuario WHERE id= ?;`;		
+		let inserts = [body.id];
+
+		connection.query(sql, inserts, function(err, result) {
+	    	connection.release();
+
+            if (!err && result.length != 0){
+                callback(err, result);	
+			}else {
+				callback(err, false);
+			}
+			
+        });
+        
+	});
+}
+
+
 userDatabase.editarUsuarios = function(connectionFactory, body, callback) {
     connectionFactory(function(err, connection) {
 
