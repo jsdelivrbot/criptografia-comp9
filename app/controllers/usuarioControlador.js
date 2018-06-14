@@ -14,7 +14,7 @@ const userController = {
                 let usuarioCriar = body.criar;
                 usuarioCriar['senha'] = bcrypt.hashSync(usuarioCriar.senha);
                 usuarioCriar['email'] = jwt.sign({ email: usuarioCriar.email}, secretKey);
-                usuarioCriar['telefone'] = jwt.sign({ email: usuarioCriar.email}, secretKey);
+                usuarioCriar['telefone'] = jwt.sign({ telefone: usuarioCriar.email}, secretKey);
                 
                 usuarioDB.criarUsuario(connectionFactory(), usuarioCriar, function(exception, criarUsuarioResult) {  
                     if (criarUsuarioResult){
@@ -44,6 +44,7 @@ const userController = {
                             element.telefone = jwt.decode(element.telefone);
                             return element;
                         });  
+
                         callback({ usuarios: result });  
                     }else{
                         callback({ message : "Falha ao buscar o usuario." });  
